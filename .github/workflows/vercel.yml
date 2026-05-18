@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    name: Publish static app
+    name: Publish Next.js app
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -24,6 +24,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Validate project structure and build
         run: npm run ci:verify
