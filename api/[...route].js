@@ -69,6 +69,28 @@ async function validateOpenAIKey(apiKey) {
   return { model: data.id || model };
 }
 
+function sanitizeProjectName(name = 'codex-app') {
+  return String(name).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48) || 'codex-app';
+}
+
+async function createVercelDeployment({ token, name, files }) {
+  if (!token) throw new Error('Paste a Vercel token or set VERCEL_TOKEN on the server.');
+  if (!Array.isArray(files) || files.length === 0) throw new Error('Generate files before deploying.');
+  const result = await fetch('https://api.vercel.com/v13/deployments', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: sanitizeProjectName(name),
+      target: 'production',
+      projectSettings: { framework: null, buildCommand: null, installCommand: null, outputDirectory: null },
+      files: files.map((file) => ({ file: String(file.path || '').replace(/^\/+/, ''), data: String(file.content || '') })),
+    }),
+  });
+  const data = await result.json().catch(() => ({}));
+  if (!result.ok) throw new Error(data.error?.message || data.message || 'Vercel deployment failed.');
+  return { id: data.id, url: data.url?.startsWith('http') ? data.url : `https://${data.url}` };
+}
+
 function responseText(data) {
   if (data.output_text) return data.output_text;
   return (data.output || []).flatMap((item) => item.content || []).map((part) => part.text || '').join('');
@@ -92,6 +114,7 @@ export default async function handler(req, res) {
         openaiConnected: Boolean(session.openaiKey || process.env.OPENAI_API_KEY),
         openaiModel: process.env.OPENAI_MODEL || 'gpt-5.2-codex',
         hasGitHubOAuth: Boolean(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET),
+        vercelConnected: Boolean(session.vercelToken || process.env.VERCEL_TOKEN),
       });
     }
 
@@ -168,6 +191,14 @@ export default async function handler(req, res) {
         committed.push(filePath);
       }
       return res.status(200).json({ ok: true, committed, repoUrl: `https://github.com/${repo}` });
+    }
+
+
+    if (path === '/api/vercel/deploy' && req.method === 'POST') {
+      const { token, name, files } = await readBody(req);
+      if (token) session.vercelToken = token;
+      const deployment = await createVercelDeployment({ token: session.vercelToken || process.env.VERCEL_TOKEN, name, files });
+      return res.status(200).json(deployment);
     }
 
     if (path === '/api/codex/build' && req.method === 'POST') {

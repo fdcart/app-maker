@@ -29,7 +29,6 @@ const openaiStatus = document.querySelector('#openai-status');
 const githubLoginButton = document.querySelector('#github-login-button');
 const githubConnectButton = document.querySelector('#github-connect-button');
 const githubTokenInput = document.querySelector('#github-token');
-const githubTokenButton = document.querySelector('#github-token-button');
 const refreshReposButton = document.querySelector('#refresh-repos-button');
 const githubStatus = document.querySelector('#github-status');
 const codexBuildButton = document.querySelector('#codex-build-button');
@@ -39,6 +38,9 @@ const repoSelect = document.querySelector('#repo-select');
 const createRepoButton = document.querySelector('#create-repo-button');
 const publishGitHubButton = document.querySelector('#publish-github-button');
 const publishGitHubStatus = document.querySelector('#publish-status-github');
+const vercelTokenInput = document.querySelector('#vercel-token');
+const deployVercelButton = document.querySelector('#deploy-vercel-button');
+const vercelStatus = document.querySelector('#vercel-status');
 let generatedFiles = [];
 let selectedScreen = 0;
 let currentApp;
@@ -197,6 +199,11 @@ async function refreshStatus() {
           : 'Paste a GitHub token to connect instantly. OAuth is optional.',
       status.githubConnected ? 'ready' : 'warning',
     );
+    setStatus(
+      vercelStatus,
+      status.vercelConnected ? 'Vercel is ready for one-button deploy.' : 'Paste a Vercel token or set VERCEL_TOKEN on the server.',
+      status.vercelConnected ? 'ready' : 'warning',
+    );
     if (status.githubConnected) await refreshRepos();
   } catch (error) {
     setStatus(openaiStatus, error.message, 'error');
@@ -217,15 +224,16 @@ async function connectOpenAI() {
   }
 }
 
-function loginGitHub() {
-  window.location.href = '/api/auth/github/start';
-}
-
-async function connectGitHubToken() {
+async function connectGitHub() {
+  const token = githubTokenInput.value.trim();
+  if (!token) {
+    window.location.href = '/api/auth/github/start';
+    return;
+  }
   try {
     const result = await api('/api/github/connect-token', {
       method: 'POST',
-      body: JSON.stringify({ token: githubTokenInput.value.trim() }),
+      body: JSON.stringify({ token }),
     });
     githubTokenInput.value = '';
     setStatus(githubStatus, `GitHub verified as ${result.user.login}.`, 'ready');
@@ -301,6 +309,34 @@ async function publishGeneratedApp() {
   }
 }
 
+
+function localFilesForDeployment() {
+  if (generatedFiles.length > 0) return generatedFiles;
+  return [
+    { path: 'index.html', content: document.documentElement.outerHTML, purpose: 'Current visual builder HTML' },
+    { path: 'README.md', content: `# ${currentApp.name}\n\n${currentApp.summary}\n`, purpose: 'Generated app notes' },
+  ];
+}
+
+async function deployToVercel() {
+  try {
+    setStatus(vercelStatus, 'Creating Vercel deployment…', 'warning');
+    const result = await api('/api/vercel/deploy', {
+      method: 'POST',
+      body: JSON.stringify({
+        token: vercelTokenInput.value.trim(),
+        name: currentApp.name,
+        files: localFilesForDeployment(),
+      }),
+    });
+    vercelTokenInput.value = '';
+    setStatus(vercelStatus, `Deployed: ${result.url}`, 'ready');
+    window.open(result.url, '_blank', 'noopener,noreferrer');
+  } catch (error) {
+    setStatus(vercelStatus, error.message, 'error');
+  }
+}
+
 function showPublishReadiness() {
   publishStatus.textContent =
     'Deployment is wired: set Vercel secrets, push to main, or run npm run publish:vercel locally.';
@@ -311,13 +347,13 @@ function showPublishReadiness() {
 generateButton.addEventListener('click', regenerate);
 publishButton.addEventListener('click', showPublishReadiness);
 openaiConnectButton.addEventListener('click', connectOpenAI);
-githubLoginButton.addEventListener('click', loginGitHub);
-githubConnectButton.addEventListener('click', loginGitHub);
-githubTokenButton.addEventListener('click', connectGitHubToken);
+githubLoginButton.addEventListener('click', connectGitHub);
+githubConnectButton.addEventListener('click', connectGitHub);
 refreshReposButton.addEventListener('click', refreshRepos);
 codexBuildButton.addEventListener('click', buildWithCodex);
 createRepoButton.addEventListener('click', createRepo);
 publishGitHubButton.addEventListener('click', publishGeneratedApp);
+deployVercelButton.addEventListener('click', deployToVercel);
 promptInput.addEventListener('input', () => render(inferApp(promptInput.value)));
 
 document.querySelectorAll('[data-idea]').forEach((button) => {

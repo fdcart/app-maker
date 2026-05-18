@@ -691,3 +691,15 @@ select:focus {
     padding-top: 50px;
   }
 }
+
+.deploy-now-button {
+  background: linear-gradient(135deg, #000000, #404040);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2);
+}
+
+.microcopy {
+  margin: 8px 0 0;
+  color: #667085;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}

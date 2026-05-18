@@ -33,6 +33,9 @@ const requiredSnippets = [
   ['server.mjs', '/api/github/connect-token'],
   ['index.html', 'Get an OpenAI API key'],
   ['index.html', 'Create a GitHub token'],
+  ['index.html', 'Deploy to Vercel'],
+  ['server.mjs', '/api/vercel/deploy'],
+  ['api/[...route].js', '/api/vercel/deploy'],
 ];
 
 for (const file of requiredFiles) {

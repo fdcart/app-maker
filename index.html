@@ -96,11 +96,11 @@
           <h2>Connect repository access</h2>
           <p>Fastest path: paste a GitHub token with repo access. OAuth still works when configured on the server.</p>
           <div class="inline-form">
-            <input id="github-token" type="password" placeholder="GitHub token: ghp_... or github_pat_..." autocomplete="off" />
-            <button class="primary-button" id="github-token-button" type="button">Connect GitHub</button>
+            <input id="github-token" type="password" placeholder="Optional GitHub token: ghp_... or github_pat_..." autocomplete="off" />
+            <button class="primary-button" id="github-connect-button" type="button">Connect GitHub</button>
           </div>
+          <p class="microcopy">Paste a token and click once, or leave it blank to use GitHub OAuth if configured.</p>
           <div class="button-row">
-            <button class="ghost-button" id="github-connect-button" type="button">Use OAuth instead</button>
             <button class="ghost-button" id="refresh-repos-button" type="button">Refresh repos</button>
           </div>
           <a class="helper-link" href="https://github.com/settings/tokens" target="_blank" rel="noreferrer">Create a GitHub token →</a>
@@ -118,8 +118,11 @@
             <button class="ghost-button" id="create-repo-button" type="button">Create private repo</button>
             <select id="repo-select" aria-label="GitHub repository"><option value="">Select a connected repo</option></select>
             <button class="primary-button" id="publish-github-button" type="button">Commit generated app</button>
+            <input id="vercel-token" type="password" placeholder="Optional Vercel token for one-button deploy" autocomplete="off" />
+            <button class="primary-button deploy-now-button" id="deploy-vercel-button" type="button">Deploy to Vercel</button>
           </div>
           <p class="connection-status" id="publish-status-github">Connect GitHub and generate files first.</p>
+          <p class="connection-status" id="vercel-status">Set <code>VERCEL_TOKEN</code> on the server or paste a token above.</p>
           <pre class="build-output" id="build-output">Generated files will appear here.</pre>
         </div>
       </section>
