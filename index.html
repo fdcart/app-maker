@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Codex App Maker: a visual AI app builder powered by Codex-style planning." />
+    <title>Codex App Maker</title>
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero-panel">
+        <nav class="topbar" aria-label="Primary">
+          <div class="brand-lockup">
+            <div class="brand-mark" aria-hidden="true">⌘</div>
+            <div>
+              <p class="eyebrow">Codex App Maker</p>
+              <strong>Visual AI builder</strong>
+            </div>
+          </div>
+          <div class="nav-actions">
+            <button class="ghost-button" type="button">GitHub sync</button>
+            <button class="primary-button" id="publish-button" type="button">Publish to Vercel</button>
+          </div>
+        </nav>
+
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="badge">✦ Lovable-style app creation, powered by Codex workflows</div>
+            <h1>Describe an app. Shape it visually. Let Codex build the code.</h1>
+            <p>
+              A simple, visual workspace where founders drag screens, tune components, and guide Codex with plain-language
+              instructions until the app is ready to ship.
+            </p>
+            <div class="prompt-card">
+              <label for="app-prompt">What should Codex make?</label>
+              <textarea id="app-prompt" rows="4">A booking app for dog groomers with payments and calendar reminders</textarea>
+              <div class="prompt-actions">
+                <button class="primary-button" id="generate-button" type="button">Generate app plan</button>
+                <button class="ghost-button" type="button">Preview</button>
+              </div>
+            </div>
+            <div class="idea-row" aria-label="Starter ideas">
+              <button type="button" data-idea="A booking app for dog groomers with payments and calendar reminders">A booking app for dog groomers with payments and calendar reminders</button>
+              <button type="button" data-idea="A CRM for freelance designers with proposals, invoices, and client portals">A CRM for freelance designers with proposals, invoices, and client portals</button>
+              <button type="button" data-idea="A meal-planning app that turns family preferences into weekly grocery lists">A meal-planning app that turns family preferences into weekly grocery lists</button>
+            </div>
+          </div>
+
+          <aside class="codex-console" aria-label="Codex build and publish plan">
+            <div class="console-header">▣ <span>Codex agent plan</span></div>
+            <div id="codex-plan"></div>
+            <div class="vercel-publish-card" id="vercel-publish-card">
+              <div class="publish-card-header">
+                <span class="vercel-mark">▲</span>
+                <div>
+                  <strong>Auto-publish with Vercel</strong>
+                  <p>Push to <code>main</code> or run the workflow manually to deploy.</p>
+                </div>
+              </div>
+              <ol class="publish-steps">
+                <li>Add <code>VERCEL_TOKEN</code>, <code>VERCEL_ORG_ID</code>, and <code>VERCEL_PROJECT_ID</code>.</li>
+                <li>Push to <code>main</code> or choose “Deploy to Vercel” in GitHub Actions.</li>
+                <li>Vercel builds, publishes, and returns the production URL.</li>
+              </ol>
+              <div class="publish-command" aria-label="Local Vercel publish command">npm run publish:vercel</div>
+              <p class="publish-status" id="publish-status">Ready for automatic Vercel deployment.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Visual builder workspace">
+        <aside class="toolbox">
+          <p class="eyebrow">Visual blocks</p>
+          <h2>Drag, ask, refine</h2>
+          <div class="palette-list">
+            <button class="palette-item" type="button"><span class="icon">💬</span><span><strong>Prompt card</strong>Tell Codex what to add next.</span></button>
+            <button class="palette-item" type="button"><span class="icon">🗄️</span><span><strong>Data model</strong>Create tables, auth, and permissions.</span></button>
+            <button class="palette-item" type="button"><span class="icon">🎨</span><span><strong>Theme</strong>Tune colors, spacing, and style.</span></button>
+            <button class="palette-item" type="button"><span class="icon">🧩</span><span><strong>Component</strong>Drop in forms, charts, maps, and lists.</span></button>
+          </div>
+          <div class="guardrail-card">
+            <span class="icon">🛡️</span>
+            <div>
+              <strong>Safe generation</strong>
+              <p>Every request is framed as an auditable Codex task with app intent, file scope, and checks.</p>
+            </div>
+          </div>
+        </aside>
+
+        <div class="canvas-panel">
+          <div class="canvas-toolbar">
+            <div>
+              <p class="eyebrow">Live canvas</p>
+              <h2 id="app-name">PawSlot Studio</h2>
+            </div>
+            <div class="view-toggle">◎ Responsive preview</div>
+          </div>
+
+          <div class="screen-tabs" id="screen-tabs"></div>
+
+          <div class="phone-frame">
+            <div class="app-preview-gradient" id="preview-gradient"></div>
+            <div class="phone-top" aria-hidden="true"></div>
+            <div class="preview-content">
+              <p class="mini-label" id="preview-app-name">PawSlot Studio</p>
+              <h3 id="screen-title">Home dashboard</h3>
+              <p id="screen-description">The daily command center with metrics, alerts, and suggested next actions.</p>
+              <div class="widget-grid" id="widget-grid"></div>
+              <button class="in-preview-button" type="button">Ask Codex to implement →</button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="inspector">
+          <p class="eyebrow">Inspector</p>
+          <h2>App brief</h2>
+          <p id="app-summary"></p>
+          <div class="stack-list" id="stack-list"></div>
+          <div class="handoff-card">
+            <span class="icon">☝️</span>
+            <div>
+              <strong>One-click handoff</strong>
+              <p>Turn the selected visual state into a Codex task with exact UX requirements and acceptance checks.</p>
+            </div>
+          </div>
+          <div class="handoff-card deploy-card">
+            <span class="icon">▲</span>
+            <div>
+              <strong>Vercel-ready</strong>
+              <p><code>vercel.json</code> and GitHub Actions are included so finished apps can publish automatically.</p>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
