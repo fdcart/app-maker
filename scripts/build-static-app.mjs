@@ -1,46 +1,28 @@
-import { cpSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
-import { dirname } from 'node:path';
+import { readFileSync } from 'node:fs';
 
 const requiredFiles = [
-  'index.html',
-  'src/app.js',
-  'src/styles.css',
-  'vercel.json',
-  '.github/workflows/vercel.yml',
-  'scripts/publish-vercel.mjs',
-  'server.mjs',
-  'api/[...route].js',
+  'package.json',
+  'next.config.ts',
+  'tailwind.config.ts',
+  'app/layout.tsx',
+  'app/page.tsx',
+  'app/new-project/page.tsx',
+  'app/blueprint/page.tsx',
+  'app/screen-map/page.tsx',
+  'app/prompt-generator/page.tsx',
+  'app/saved-projects/page.tsx',
+  'app/settings/page.tsx',
+  'lib/blueprint.ts',
+  'data/demo-projects.ts',
+  'types/project.ts'
 ];
 
 const requiredSnippets = [
-  ['index.html', 'Codex App Maker'],
-  ['index.html', 'Publish to Vercel'],
-  ['index.html', 'src/app.js'],
-  ['src/app.js', 'function inferApp'],
-  ['src/app.js', 'showPublishReadiness'],
-  ['index.html', 'Generate app plan'],
-  ['src/styles.css', '.workspace'],
-  ['src/styles.css', '.vercel-publish-card'],
-  ['src/styles.css', '@media'],
-  ['vercel.json', 'outputDirectory'],
-  ['.github/workflows/vercel.yml', 'vercel deploy --prebuilt --prod'],
-  ['scripts/publish-vercel.mjs', 'VERCEL_TOKEN'],
-  ['server.mjs', '/api/codex/build'],
-  ['server.mjs', '/api/auth/github/start'],
-  ['server.mjs', 'https://api.openai.com/v1/responses'],
-  ['api/[...route].js', 'https://api.openai.com/v1/responses'],
-  ['api/[...route].js', 'https://github.com/login/oauth/authorize'],
-  ['server.mjs', '/api/github/connect-token'],
-  ['index.html', 'Get an OpenAI API key'],
-  ['index.html', 'Create a GitHub token'],
-  ['index.html', 'Deploy to Vercel'],
-  ['index.html', 'Build native React app'],
-  ['index.html', 'src/App.jsx'],
-  ['src/app.js', 'fallbackReactFiles'],
-  ['server.mjs', 'native React + Vite app'],
-  ['api/[...route].js', 'native React + Vite app'],
-  ['server.mjs', '/api/vercel/deploy'],
-  ['api/[...route].js', '/api/vercel/deploy'],
+  ['app/page.tsx', 'EasyCodex'],
+  ['app/new-project/page.tsx', 'What app do you want to build?'],
+  ['app/prompt-generator/page.tsx', 'Copy to clipboard'],
+  ['lib/blueprint.ts', 'buildCodexPrompt'],
+  ['data/demo-projects.ts', 'StayNest Host OS']
 ];
 
 for (const file of requiredFiles) {
@@ -48,16 +30,8 @@ for (const file of requiredFiles) {
 }
 
 for (const [file, snippet] of requiredSnippets) {
-  const contents = readFileSync(file, 'utf8');
-  if (!contents.includes(snippet)) {
-    throw new Error(`${file} is missing expected snippet: ${snippet}`);
-  }
+  const content = readFileSync(file, 'utf8');
+  if (!content.includes(snippet)) throw new Error(`${file} missing snippet: ${snippet}`);
 }
 
-rmSync('dist', { recursive: true, force: true });
-for (const file of ['index.html', 'src/app.js', 'src/styles.css']) {
-  mkdirSync(dirname(`dist/${file}`), { recursive: true });
-  cpSync(file, `dist/${file}`);
-}
-
-console.log('Static app and Vercel deployment checks passed. Built dist/.');
+console.log('EasyCodex structure checks passed.');
