@@ -618,3 +618,76 @@ select:focus {
     grid-column: auto;
   }
 }
+
+
+.setup-heading {
+  grid-column: 1 / -1;
+  padding: 8px 4px 0;
+}
+
+.setup-heading h2 {
+  margin: 4px 0 8px;
+  color: #101828;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  letter-spacing: -0.04em;
+}
+
+.setup-heading p:not(.eyebrow) {
+  max-width: 760px;
+  color: #52627a;
+  line-height: 1.65;
+}
+
+.step-card {
+  position: relative;
+  padding-top: 54px;
+}
+
+.step-badge {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  color: white;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #155eef, #7a2ce6);
+  font-weight: 900;
+}
+
+.helper-link {
+  display: inline-flex;
+  margin-top: 12px;
+  color: #155eef;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.helper-link:hover {
+  text-decoration: underline;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.compact-stack {
+  gap: 8px;
+}
+
+@media (max-width: 1240px) {
+  .builder-card {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 720px) {
+  .step-card {
+    padding-top: 50px;
+  }
+}

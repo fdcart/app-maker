@@ -30,6 +30,9 @@ const requiredSnippets = [
   ['server.mjs', 'https://api.openai.com/v1/responses'],
   ['api/[...route].js', 'https://api.openai.com/v1/responses'],
   ['api/[...route].js', 'https://github.com/login/oauth/authorize'],
+  ['server.mjs', '/api/github/connect-token'],
+  ['index.html', 'Get an OpenAI API key'],
+  ['index.html', 'Create a GitHub token'],
 ];
 
 for (const file of requiredFiles) {

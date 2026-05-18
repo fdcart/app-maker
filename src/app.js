@@ -28,6 +28,8 @@ const openaiConnectButton = document.querySelector('#openai-connect-button');
 const openaiStatus = document.querySelector('#openai-status');
 const githubLoginButton = document.querySelector('#github-login-button');
 const githubConnectButton = document.querySelector('#github-connect-button');
+const githubTokenInput = document.querySelector('#github-token');
+const githubTokenButton = document.querySelector('#github-token-button');
 const refreshReposButton = document.querySelector('#refresh-repos-button');
 const githubStatus = document.querySelector('#github-status');
 const codexBuildButton = document.querySelector('#codex-build-button');
@@ -183,7 +185,7 @@ async function refreshStatus() {
     const status = await api('/api/status');
     setStatus(
       openaiStatus,
-      status.openaiConnected ? `OpenAI connected using ${status.openaiModel}.` : 'OpenAI is not connected yet.',
+      status.openaiConnected ? `OpenAI is ready using ${status.openaiModel}.` : 'Paste an OpenAI API key to enable Codex.',
       status.openaiConnected ? 'ready' : 'warning',
     );
     setStatus(
@@ -191,8 +193,8 @@ async function refreshStatus() {
       status.githubConnected
         ? `GitHub connected as ${status.githubUser?.login || 'authorized user'}.`
         : status.hasGitHubOAuth
-          ? 'GitHub OAuth is configured. Login when ready.'
-          : 'GitHub OAuth env vars are missing on the server.',
+          ? 'Paste a GitHub token or use OAuth.'
+          : 'Paste a GitHub token to connect instantly. OAuth is optional.',
       status.githubConnected ? 'ready' : 'warning',
     );
     if (status.githubConnected) await refreshRepos();
@@ -209,7 +211,7 @@ async function connectOpenAI() {
       body: JSON.stringify({ apiKey: openaiKeyInput.value.trim() }),
     });
     openaiKeyInput.value = '';
-    setStatus(openaiStatus, `OpenAI connected. Coding model: ${result.model}.`, 'ready');
+    setStatus(openaiStatus, `OpenAI verified. Codex model: ${result.model}.`, 'ready');
   } catch (error) {
     setStatus(openaiStatus, error.message, 'error');
   }
@@ -217,6 +219,20 @@ async function connectOpenAI() {
 
 function loginGitHub() {
   window.location.href = '/api/auth/github/start';
+}
+
+async function connectGitHubToken() {
+  try {
+    const result = await api('/api/github/connect-token', {
+      method: 'POST',
+      body: JSON.stringify({ token: githubTokenInput.value.trim() }),
+    });
+    githubTokenInput.value = '';
+    setStatus(githubStatus, `GitHub verified as ${result.user.login}.`, 'ready');
+    await refreshRepos();
+  } catch (error) {
+    setStatus(githubStatus, error.message, 'error');
+  }
 }
 
 async function refreshRepos() {
@@ -297,6 +313,7 @@ publishButton.addEventListener('click', showPublishReadiness);
 openaiConnectButton.addEventListener('click', connectOpenAI);
 githubLoginButton.addEventListener('click', loginGitHub);
 githubConnectButton.addEventListener('click', loginGitHub);
+githubTokenButton.addEventListener('click', connectGitHubToken);
 refreshReposButton.addEventListener('click', refreshRepos);
 codexBuildButton.addEventListener('click', buildWithCodex);
 createRepoButton.addEventListener('click', createRepo);

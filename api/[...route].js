@@ -46,6 +46,29 @@ async function githubFetch(session, path, options = {}) {
   return data;
 }
 
+async function validateGitHubToken(session, token) {
+  session.githubToken = token;
+  try {
+    session.githubUser = await githubFetch(session, '/user');
+    return session.githubUser;
+  } catch (error) {
+    delete session.githubToken;
+    delete session.githubUser;
+    throw error;
+  }
+}
+
+async function validateOpenAIKey(apiKey) {
+  const model = process.env.OPENAI_MODEL || 'gpt-5.2-codex';
+  const result = await fetch(`https://api.openai.com/v1/models/${encodeURIComponent(model)}`, {
+    headers: { Authorization: `Bearer ${apiKey}` },
+  });
+  if (result.status === 404) return { model, warning: 'Model lookup was unavailable, but the API key format is valid.' };
+  const data = await result.json().catch(() => ({}));
+  if (!result.ok) throw new Error(data.error?.message || 'OpenAI API key verification failed.');
+  return { model: data.id || model };
+}
+
 function responseText(data) {
   if (data.output_text) return data.output_text;
   return (data.output || []).flatMap((item) => item.content || []).map((part) => part.text || '').join('');
@@ -74,9 +97,17 @@ export default async function handler(req, res) {
 
     if (path === '/api/openai/connect' && req.method === 'POST') {
       const { apiKey } = await readBody(req);
-      if (!apiKey?.startsWith('sk-')) return res.status(400).json({ error: 'Enter a valid OpenAI API key.' });
+      if (!apiKey?.startsWith('sk-')) return res.status(400).json({ error: 'Enter an OpenAI API key that starts with sk-.' });
+      const validation = await validateOpenAIKey(apiKey);
       session.openaiKey = apiKey;
-      return res.status(200).json({ ok: true, model: process.env.OPENAI_MODEL || 'gpt-5.2-codex' });
+      return res.status(200).json({ ok: true, ...validation });
+    }
+
+    if (path === '/api/github/connect-token' && req.method === 'POST') {
+      const { token } = await readBody(req);
+      if (!/^(ghp_|github_pat_|gho_|ghu_|ghs_)/.test(token || '')) return res.status(400).json({ error: 'Paste a GitHub token such as ghp_... or github_pat_...' });
+      const user = await validateGitHubToken(session, token);
+      return res.status(200).json({ ok: true, user: { login: user.login, avatarUrl: user.avatar_url } });
     }
 
     if (path === '/api/auth/github/start') {
@@ -101,8 +132,7 @@ export default async function handler(req, res) {
       });
       const tokenData = await tokenResponse.json();
       if (!tokenData.access_token) return res.status(400).json({ error: tokenData.error_description || 'GitHub login failed.' });
-      session.githubToken = tokenData.access_token;
-      session.githubUser = await githubFetch(session, '/user');
+      await validateGitHubToken(session, tokenData.access_token);
       res.writeHead(302, { Location: '/?github=connected' });
       return res.end();
     }

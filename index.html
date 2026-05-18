@@ -70,45 +70,57 @@
         </div>
       </section>
 
-      <section class="integration-panel" aria-label="Codex, OpenAI, and GitHub integrations">
-        <div class="integration-card">
+      <section class="integration-panel" aria-label="Simple setup for OpenAI, GitHub, and Codex building">
+        <div class="setup-heading">
+          <p class="eyebrow">Simple setup</p>
+          <h2>Connect once, then build and publish</h2>
+          <p>Use your own OpenAI and GitHub credentials in this session. If the server already has an OpenAI key, Codex is ready automatically.</p>
+        </div>
+
+        <div class="integration-card step-card">
+          <span class="step-badge">1</span>
           <p class="eyebrow">OpenAI login</p>
-          <h2>Connect the Codex engine</h2>
-          <p>Use an OpenAI API key for this browser session or set <code>OPENAI_API_KEY</code> on the server.</p>
+          <h2>Connect Codex</h2>
+          <p>Paste an OpenAI API key or use the server key. The app verifies the key before generating code.</p>
           <div class="inline-form">
-            <input id="openai-key" type="password" placeholder="sk-..." autocomplete="off" />
+            <input id="openai-key" type="password" placeholder="OpenAI API key: sk-..." autocomplete="off" />
             <button class="primary-button" id="openai-connect-button" type="button">Connect OpenAI</button>
           </div>
+          <a class="helper-link" href="https://platform.openai.com/api-keys" target="_blank" rel="noreferrer">Get an OpenAI API key →</a>
           <p class="connection-status" id="openai-status">Checking OpenAI connection…</p>
         </div>
-        <div class="integration-card">
-          <p class="eyebrow">GitHub integration</p>
-          <h2>Login and ship code</h2>
-          <p>Authorize GitHub to create repos and commit generated files from the visual canvas.</p>
+
+        <div class="integration-card step-card">
+          <span class="step-badge">2</span>
+          <p class="eyebrow">GitHub login</p>
+          <h2>Connect repository access</h2>
+          <p>Fastest path: paste a GitHub token with repo access. OAuth still works when configured on the server.</p>
           <div class="inline-form">
-            <button class="primary-button" id="github-connect-button" type="button">Login with GitHub</button>
+            <input id="github-token" type="password" placeholder="GitHub token: ghp_... or github_pat_..." autocomplete="off" />
+            <button class="primary-button" id="github-token-button" type="button">Connect GitHub</button>
+          </div>
+          <div class="button-row">
+            <button class="ghost-button" id="github-connect-button" type="button">Use OAuth instead</button>
             <button class="ghost-button" id="refresh-repos-button" type="button">Refresh repos</button>
           </div>
+          <a class="helper-link" href="https://github.com/settings/tokens" target="_blank" rel="noreferrer">Create a GitHub token →</a>
           <p class="connection-status" id="github-status">Checking GitHub connection…</p>
         </div>
-        <div class="integration-card builder-card">
-          <p class="eyebrow">Codex builder</p>
-          <h2>Generate real files</h2>
-          <p>Send the current visual brief to OpenAI and receive app files that can be committed to GitHub.</p>
-          <button class="primary-button" id="codex-build-button" type="button">Build with Codex</button>
-          <pre class="build-output" id="build-output">Generated files will appear here.</pre>
-        </div>
-        <div class="integration-card">
-          <p class="eyebrow">Repository publish</p>
-          <h2>Commit to GitHub</h2>
-          <p>Create a repo or publish generated files into an existing <code>owner/repo</code>.</p>
-          <div class="inline-form stacked-form">
+
+        <div class="integration-card step-card builder-card">
+          <span class="step-badge">3</span>
+          <p class="eyebrow">Build and publish</p>
+          <h2>Generate code, then commit it</h2>
+          <p>Codex creates real files from the visual plan. Pick a repo or create one, then commit the generated app.</p>
+          <div class="inline-form stacked-form compact-stack">
+            <button class="primary-button" id="codex-build-button" type="button">Build with Codex</button>
             <input id="repo-name" type="text" placeholder="new-app-repo" />
-            <button class="ghost-button" id="create-repo-button" type="button">Create repo</button>
+            <button class="ghost-button" id="create-repo-button" type="button">Create private repo</button>
             <select id="repo-select" aria-label="GitHub repository"><option value="">Select a connected repo</option></select>
             <button class="primary-button" id="publish-github-button" type="button">Commit generated app</button>
           </div>
           <p class="connection-status" id="publish-status-github">Connect GitHub and generate files first.</p>
+          <pre class="build-output" id="build-output">Generated files will appear here.</pre>
         </div>
       </section>
 
