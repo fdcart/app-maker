@@ -82,7 +82,7 @@ async function createVercelDeployment({ token, name, files }) {
     body: JSON.stringify({
       name: sanitizeProjectName(name),
       target: 'production',
-      projectSettings: { framework: null, buildCommand: null, installCommand: null, outputDirectory: null },
+      projectSettings: { framework: 'vite', buildCommand: 'npm run build', installCommand: 'npm install', outputDirectory: 'dist' },
       files: files.map((file) => ({ file: String(file.path || '').replace(/^\/+/, ''), data: String(file.content || '') })),
     }),
   });
@@ -211,7 +211,7 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           model,
           input: [
-            { role: 'developer', content: 'You are Codex in a visual app builder. Return only JSON with summary, files, and nextSteps. Include index.html, src/app.js, src/styles.css, README.md. No secrets.' },
+            { role: 'developer', content: 'You are Codex in a visual app builder. Return only JSON with summary, files, and nextSteps. Generate a native React + Vite app. Include package.json, index.html, src/main.jsx, src/App.jsx, src/styles.css, README.md. Use functional React components, realistic mock data, accessible markup, responsive CSS, and no secrets.' },
             { role: 'user', content: `Build this app. Prompt: ${prompt}\nPlan: ${JSON.stringify(app || {})}` },
           ],
           text: {

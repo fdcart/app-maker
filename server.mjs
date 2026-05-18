@@ -132,7 +132,7 @@ async function createVercelDeployment({ token, name, files }) {
     body: JSON.stringify({
       name: sanitizeProjectName(name),
       target: 'production',
-      projectSettings: { framework: null, buildCommand: null, installCommand: null, outputDirectory: null },
+      projectSettings: { framework: 'vite', buildCommand: 'npm run build', installCommand: 'npm install', outputDirectory: 'dist' },
       files: files.map((file) => ({ file: String(file.path || '').replace(/^\/+/, ''), data: String(file.content || '') })),
     }),
   });
@@ -332,7 +332,7 @@ async function handleApi(request, response, pathname) {
           {
             role: 'developer',
             content:
-              'You are Codex inside a visual app builder. Return only JSON for a small production-quality static web app. Include index.html, src/app.js, src/styles.css, and README.md. Do not include secrets.',
+              'You are Codex inside a visual app builder. Return only JSON for a production-quality native React + Vite app. Include package.json, index.html, src/main.jsx, src/App.jsx, src/styles.css, and README.md. Use functional React components, realistic mock data, accessible markup, responsive CSS, and no secrets.',
           },
           {
             role: 'user',

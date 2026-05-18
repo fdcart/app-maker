@@ -1,13 +1,13 @@
 const starterTasks = [
   'Discover user goals and core workflow',
   'Design responsive screens and components',
-  'Generate React + TypeScript code',
-  'Wire mock data, auth states, and actions',
+  'Generate a native React + Vite component tree',
+  'Wire mock data, state, routes, and interactions',
   'Run checks and prepare a deployable build',
   'Publish automatically to Vercel',
 ];
 
-const stack = ['React', 'TypeScript', 'Vite', 'Codex plan', 'Visual canvas'];
+const stack = ['React', 'Vite', 'Component tree', 'Responsive CSS', 'GitHub export', 'Vercel deploy'];
 
 const promptInput = document.querySelector('#app-prompt');
 const generateButton = document.querySelector('#generate-button');
@@ -21,6 +21,11 @@ const screenTitle = document.querySelector('#screen-title');
 const screenDescription = document.querySelector('#screen-description');
 const widgetGrid = document.querySelector('#widget-grid');
 const previewGradient = document.querySelector('#preview-gradient');
+const chatIdea = document.querySelector('#chat-idea');
+const visualBuildButton = document.querySelector('#visual-build-button');
+const implementSelectionButton = document.querySelector('#implement-selection-button');
+const previewFrame = document.querySelector('#preview-frame');
+const selectedComponentName = document.querySelector('#selected-component-name');
 const publishButton = document.querySelector('#publish-button');
 const publishStatus = document.querySelector('#publish-status');
 const openaiKeyInput = document.querySelector('#openai-key');
@@ -135,6 +140,7 @@ function renderTabs(app) {
 function renderPreview(app) {
   const screen = app.screens[selectedScreen];
   screenTitle.textContent = screen.title;
+  selectedComponentName.textContent = `${screen.title} React section`;
   screenDescription.textContent = screen.description;
   previewGradient.className = `app-preview-gradient ${screen.accent}`;
   widgetGrid.innerHTML = screen.widgets
@@ -149,6 +155,7 @@ function renderPreview(app) {
 
 function render(app) {
   currentApp = app;
+  chatIdea.textContent = promptInput.value.trim() || 'Describe the React app you want to build';
   appName.textContent = app.name;
   previewAppName.textContent = app.name;
   appSummary.textContent = app.summary;
@@ -324,12 +331,43 @@ async function publishGeneratedApp() {
 }
 
 
-function localFilesForDeployment() {
-  if (generatedFiles.length > 0) return generatedFiles;
+function fallbackReactFiles() {
   return [
-    { path: 'index.html', content: document.documentElement.outerHTML, purpose: 'Current visual builder HTML' },
-    { path: 'README.md', content: `# ${currentApp.name}\n\n${currentApp.summary}\n`, purpose: 'Generated app notes' },
+    {
+      path: 'package.json',
+      purpose: 'Vite React package manifest',
+      content: JSON.stringify({
+        scripts: { dev: 'vite --host 0.0.0.0', build: 'vite build', preview: 'vite preview --host 0.0.0.0' },
+        dependencies: { '@vitejs/plugin-react': 'latest', vite: 'latest', react: 'latest', 'react-dom': 'latest' },
+        devDependencies: {},
+      }, null, 2),
+    },
+    {
+      path: 'index.html',
+      purpose: 'React app shell',
+      content: '<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>' + currentApp.name + '</title></head><body><div id="root"></div><script type="module" src="/src/main.jsx"></script></body></html>',
+    },
+    {
+      path: 'src/main.jsx',
+      purpose: 'React entry point',
+      content: "import React from 'react';\nimport { createRoot } from 'react-dom/client';\nimport App from './App.jsx';\nimport './styles.css';\n\ncreateRoot(document.getElementById('root')).render(<App />);\n",
+    },
+    {
+      path: 'src/App.jsx',
+      purpose: 'Generated React component tree',
+      content: `const screens = ${JSON.stringify(currentApp.screens, null, 2)};\n\nexport default function App() {\n  return (\n    <main className="app">\n      <section className="hero">\n        <p className="eyebrow">Generated with Codex App Maker</p>\n        <h1>${currentApp.name}</h1>\n        <p>${currentApp.summary}</p>\n      </section>\n      <section className="grid">\n        {screens.map((screen) => (\n          <article className="card" key={screen.title}>\n            <span>{screen.title}</span>\n            <h2>{screen.description}</h2>\n            <div className="chips">{screen.widgets.map((widget) => <b key={widget}>{widget}</b>)}</div>\n          </article>\n        ))}\n      </section>\n    </main>\n  );\n}\n`,
+    },
+    {
+      path: 'src/styles.css',
+      purpose: 'Responsive React app styling',
+      content: ':root{font-family:Inter,system-ui,sans-serif;color:#101828;background:#eef4ff}body{margin:0}.app{min-height:100vh;padding:48px}.hero{padding:48px;border-radius:32px;background:linear-gradient(135deg,#155eef,#7a2ce6);color:white}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-weight:900}.hero h1{font-size:clamp(3rem,8vw,7rem);line-height:.9;margin:.2em 0}.hero p{max-width:720px;font-size:1.2rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:24px}.card{padding:24px;border-radius:24px;background:white;box-shadow:0 20px 60px #1018281a}.card span{color:#155eef;font-weight:900}.card h2{font-size:1.3rem}.chips{display:flex;flex-wrap:wrap;gap:8px}.chips b{padding:8px 10px;border-radius:999px;background:#eff8ff;color:#1849a9}@media(max-width:720px){.app{padding:18px}.hero{padding:28px}}',
+    },
+    { path: 'README.md', content: `# ${currentApp.name}\n\n${currentApp.summary}\n\nGenerated as a native React + Vite app.`, purpose: 'Generated app README' },
   ];
+}
+
+function localFilesForDeployment() {
+  return generatedFiles.length > 0 ? generatedFiles : fallbackReactFiles();
 }
 
 async function deployToVercel() {
@@ -369,6 +407,24 @@ createRepoButton.addEventListener('click', createRepo);
 publishGitHubButton.addEventListener('click', publishGeneratedApp);
 deployVercelButton.addEventListener('click', deployToVercel);
 promptInput.addEventListener('input', () => render(inferApp(promptInput.value)));
+visualBuildButton.addEventListener('click', buildWithCodex);
+implementSelectionButton.addEventListener('click', buildWithCodex);
+
+document.querySelectorAll('[data-quick-prompt]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const addition = button.dataset.quickPrompt;
+    promptInput.value = `${promptInput.value.trim()} ${addition}`.trim();
+    regenerate();
+  });
+});
+
+document.querySelectorAll('[data-device]').forEach((button) => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('[data-device]').forEach((item) => item.classList.remove('active'));
+    button.classList.add('active');
+    previewFrame.dataset.device = button.dataset.device;
+  });
+});
 
 document.querySelectorAll('[data-idea]').forEach((button) => {
   button.addEventListener('click', () => {

@@ -127,66 +127,93 @@
         </div>
       </section>
 
-      <section class="workspace" aria-label="Visual builder workspace">
-        <aside class="toolbox">
-          <p class="eyebrow">Visual blocks</p>
-          <h2>Drag, ask, refine</h2>
-          <div class="palette-list">
-            <button class="palette-item" type="button"><span class="icon">💬</span><span><strong>Prompt card</strong>Tell Codex what to add next.</span></button>
-            <button class="palette-item" type="button"><span class="icon">🗄️</span><span><strong>Data model</strong>Create tables, auth, and permissions.</span></button>
-            <button class="palette-item" type="button"><span class="icon">🎨</span><span><strong>Theme</strong>Tune colors, spacing, and style.</span></button>
-            <button class="palette-item" type="button"><span class="icon">🧩</span><span><strong>Component</strong>Drop in forms, charts, maps, and lists.</span></button>
-          </div>
-          <div class="guardrail-card">
-            <span class="icon">🛡️</span>
-            <div>
-              <strong>Safe generation</strong>
-              <p>Every request is framed as an auditable Codex task with app intent, file scope, and checks.</p>
+      <section class="workspace lovable-workspace" aria-label="Visual React app builder workspace">
+        <aside class="chat-builder" aria-label="Codex chat builder">
+          <p class="eyebrow">Codex chat</p>
+          <h2>Build by chatting</h2>
+          <div class="chat-thread" aria-live="polite">
+            <div class="chat-bubble assistant">
+              <strong>Codex</strong>
+              <p>I’ll turn your idea into a native React + Vite app with screens, components, state, and responsive styling.</p>
+            </div>
+            <div class="chat-bubble user">
+              <strong>You</strong>
+              <p id="chat-idea">A booking app for dog groomers with payments and calendar reminders</p>
             </div>
           </div>
+          <div class="quick-actions" aria-label="Fast visual edit prompts">
+            <button type="button" data-quick-prompt="Make it mobile-first with a bottom tab bar and big touch targets.">Mobile-first</button>
+            <button type="button" data-quick-prompt="Add authentication, onboarding, and a polished empty state.">Auth flow</button>
+            <button type="button" data-quick-prompt="Use a premium SaaS dashboard style with charts and cards.">SaaS style</button>
+            <button type="button" data-quick-prompt="Add Supabase-ready data models and CRUD screens.">Data models</button>
+          </div>
+          <button class="primary-button full-width" id="visual-build-button" type="button">Build native React app</button>
         </aside>
 
-        <div class="canvas-panel">
+        <div class="canvas-panel visual-canvas">
           <div class="canvas-toolbar">
             <div>
-              <p class="eyebrow">Live canvas</p>
+              <p class="eyebrow">Live visual canvas</p>
               <h2 id="app-name">PawSlot Studio</h2>
             </div>
-            <div class="view-toggle">◎ Responsive preview</div>
+            <div class="device-toggle" aria-label="Preview size">
+              <button class="active" type="button" data-device="desktop">Desktop</button>
+              <button type="button" data-device="tablet">Tablet</button>
+              <button type="button" data-device="phone">Phone</button>
+            </div>
           </div>
 
           <div class="screen-tabs" id="screen-tabs"></div>
 
-          <div class="phone-frame">
+          <div class="browser-frame" id="preview-frame">
+            <div class="browser-chrome" aria-hidden="true"><span></span><span></span><span></span><p>React preview</p></div>
             <div class="app-preview-gradient" id="preview-gradient"></div>
-            <div class="phone-top" aria-hidden="true"></div>
-            <div class="preview-content">
-              <p class="mini-label" id="preview-app-name">PawSlot Studio</p>
+            <div class="preview-content react-preview-content">
+              <div class="preview-topline">
+                <p class="mini-label" id="preview-app-name">PawSlot Studio</p>
+                <span>React + Vite</span>
+              </div>
               <h3 id="screen-title">Home dashboard</h3>
               <p id="screen-description">The daily command center with metrics, alerts, and suggested next actions.</p>
-              <div class="widget-grid" id="widget-grid"></div>
-              <button class="in-preview-button" type="button">Ask Codex to implement →</button>
+              <div class="visual-layout">
+                <div class="hero-widget">
+                  <span>Selected screen</span>
+                  <strong id="selected-component-name">Dashboard shell</strong>
+                  <p>Click a screen tab or quick edit, then ask Codex to update the generated React files.</p>
+                </div>
+                <div class="widget-grid" id="widget-grid"></div>
+              </div>
+              <button class="in-preview-button" id="implement-selection-button" type="button">Ask Codex to implement selection →</button>
             </div>
           </div>
         </div>
 
-        <aside class="inspector">
-          <p class="eyebrow">Inspector</p>
-          <h2>App brief</h2>
+        <aside class="inspector visual-inspector">
+          <p class="eyebrow">React inspector</p>
+          <h2>App blueprint</h2>
           <p id="app-summary"></p>
           <div class="stack-list" id="stack-list"></div>
+          <div class="native-react-card">
+            <strong>Generated output</strong>
+            <ul>
+              <li><code>package.json</code> with Vite scripts</li>
+              <li><code>src/App.jsx</code> component tree</li>
+              <li><code>src/main.jsx</code> React mount</li>
+              <li><code>src/styles.css</code> responsive design</li>
+            </ul>
+          </div>
           <div class="handoff-card">
             <span class="icon">☝️</span>
             <div>
-              <strong>One-click handoff</strong>
-              <p>Turn the selected visual state into a Codex task with exact UX requirements and acceptance checks.</p>
+              <strong>Visual edit handoff</strong>
+              <p>Every click becomes a Codex instruction with UX requirements, selected screen, and acceptance checks.</p>
             </div>
           </div>
           <div class="handoff-card deploy-card">
             <span class="icon">▲</span>
             <div>
-              <strong>Vercel-ready</strong>
-              <p><code>vercel.json</code> and GitHub Actions are included so finished apps can publish automatically.</p>
+              <strong>Ship path</strong>
+              <p>Commit the generated React app to GitHub or deploy the file bundle directly to Vercel.</p>
             </div>
           </div>
         </aside>

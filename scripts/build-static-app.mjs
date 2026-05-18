@@ -34,6 +34,11 @@ const requiredSnippets = [
   ['index.html', 'Get an OpenAI API key'],
   ['index.html', 'Create a GitHub token'],
   ['index.html', 'Deploy to Vercel'],
+  ['index.html', 'Build native React app'],
+  ['index.html', 'src/App.jsx'],
+  ['src/app.js', 'fallbackReactFiles'],
+  ['server.mjs', 'native React + Vite app'],
+  ['api/[...route].js', 'native React + Vite app'],
   ['server.mjs', '/api/vercel/deploy'],
   ['api/[...route].js', '/api/vercel/deploy'],
 ];

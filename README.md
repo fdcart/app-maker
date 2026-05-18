@@ -1,6 +1,6 @@
 # Codex App Maker
 
-A Lovable-style visual app-builder that connects to OpenAI for Codex-style code generation, GitHub for repository creation/commits, and Vercel for deployment.
+A Lovable-style visual React app builder that connects to OpenAI for Codex-style code generation, GitHub for repository creation/commits, and Vercel for deployment. It is designed around chat, quick visual edits, a live canvas, and native React + Vite output.
 
 ## Run locally
 
@@ -24,7 +24,7 @@ The build script is dependency-free, checks that the static app, JavaScript, CSS
 2. Set `OPENAI_API_KEY` for automatic server-side Codex access, or paste an OpenAI API key into the in-app OpenAI card. The app verifies the key before using it.
 3. Paste a GitHub token in the in-app GitHub card, then click **Connect GitHub**. Use a classic token with `repo` access, or a fine-grained token that can read/write repository contents. If OAuth is not configured and the token field is blank, the app now stays on the page and prompts for a token instead of navigating to an error.
 4. Optional: create a GitHub OAuth App with callback URL `http://localhost:5173/api/auth/github/callback`, then set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` if you prefer OAuth.
-5. Click **Build with Codex** to generate files with OpenAI, then create/select a repo and commit those files to GitHub.
+5. Click **Build native React app** or **Build with Codex** to generate a Vite React project (`package.json`, `src/App.jsx`, `src/main.jsx`, and responsive CSS), then create/select a repo and commit those files to GitHub.
 6. Click **Deploy to Vercel** to create a production deployment using `VERCEL_TOKEN` from the server or a pasted Vercel token in the UI.
 
 The default coding model is `gpt-5.2-codex`; override it with `OPENAI_MODEL` if your OpenAI project uses a different model.
