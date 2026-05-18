@@ -1,0 +1,12 @@
+{
+  "name": "codex-app-maker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "build": "node scripts/build-static-app.mjs",
+    "publish:vercel": "node scripts/publish-vercel.mjs",
+    "start": "node server.mjs"
+  }
+}
