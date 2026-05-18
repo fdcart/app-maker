@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { Sidebar } from '@/components/sidebar';
 import { appTypeOptions, buildCodexPrompt, createFeatureChecklist, generateBlueprint, styleOptions } from '@/lib/blueprint';
+import { AppType, VisualStyle } from '@/types/project';
 
 export default function NewProjectPage() {
   const [idea, setIdea] = useState('A SaaS tool that helps gyms manage memberships, classes, and trainer schedules.');
@@ -28,8 +29,8 @@ export default function NewProjectPage() {
           <label className="mt-4 block text-sm font-medium">What app do you want to build?</label>
           <textarea value={idea} onChange={(e) => setIdea(e.target.value)} className="mt-2 h-32 w-full rounded-2xl border border-slate-200 p-4" />
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <select value={appType} onChange={(e) => setAppType(e.target.value as any)} className="rounded-xl border border-slate-200 p-3">{appTypeOptions.map((o) => <option key={o}>{o}</option>)}</select>
-            <select value={style} onChange={(e) => setStyle(e.target.value as any)} className="rounded-xl border border-slate-200 p-3">{styleOptions.map((o) => <option key={o}>{o}</option>)}</select>
+            <select value={appType} onChange={(e) => { const next=e.target.value as AppType; if (appTypeOptions.includes(next)) setAppType(next); }} className="rounded-xl border border-slate-200 p-3">{appTypeOptions.map((o) => <option key={o}>{o}</option>)}</select>
+            <select value={style} onChange={(e) => { const next=e.target.value as VisualStyle; if (styleOptions.includes(next)) setStyle(next); }} className="rounded-xl border border-slate-200 p-3">{styleOptions.map((o) => <option key={o}>{o}</option>)}</select>
           </div>
           <input value={roles} onChange={(e) => setRoles(e.target.value)} className="mt-3 w-full rounded-xl border border-slate-200 p-3" placeholder="User roles (comma-separated)" />
           <div className="mt-4 grid gap-2 sm:grid-cols-2">
