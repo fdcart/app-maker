@@ -42,6 +42,7 @@ const vercelTokenInput = document.querySelector('#vercel-token');
 const deployVercelButton = document.querySelector('#deploy-vercel-button');
 const vercelStatus = document.querySelector('#vercel-status');
 let generatedFiles = [];
+let latestStatus = { hasGitHubOAuth: false, githubConnected: false, openaiConnected: false, vercelConnected: false };
 let selectedScreen = 0;
 let currentApp;
 
@@ -185,6 +186,7 @@ function setStatus(element, message, kind = 'neutral') {
 async function refreshStatus() {
   try {
     const status = await api('/api/status');
+    latestStatus = status;
     setStatus(
       openaiStatus,
       status.openaiConnected ? `OpenAI is ready using ${status.openaiModel}.` : 'Paste an OpenAI API key to enable Codex.',
@@ -227,15 +229,27 @@ async function connectOpenAI() {
 async function connectGitHub() {
   const token = githubTokenInput.value.trim();
   if (!token) {
-    window.location.href = '/api/auth/github/start';
+    if (latestStatus.hasGitHubOAuth) {
+      window.location.href = '/api/auth/github/start';
+      return;
+    }
+    githubTokenInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    githubTokenInput.focus();
+    setStatus(
+      githubStatus,
+      'Paste a GitHub token, then click Connect GitHub. OAuth is not configured on this server.',
+      'warning',
+    );
     return;
   }
   try {
+    setStatus(githubStatus, 'Verifying GitHub token…', 'warning');
     const result = await api('/api/github/connect-token', {
       method: 'POST',
       body: JSON.stringify({ token }),
     });
     githubTokenInput.value = '';
+    latestStatus.githubConnected = true;
     setStatus(githubStatus, `GitHub verified as ${result.user.login}.`, 'ready');
     await refreshRepos();
   } catch (error) {

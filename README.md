@@ -22,7 +22,7 @@ The build script is dependency-free, checks that the static app, JavaScript, CSS
 
 1. Copy `.env.example` to `.env` or export the variables in your shell.
 2. Set `OPENAI_API_KEY` for automatic server-side Codex access, or paste an OpenAI API key into the in-app OpenAI card. The app verifies the key before using it.
-3. Paste a GitHub token in the in-app GitHub card for the simplest connection. Use a classic token with `repo` access, or a fine-grained token that can read/write repository contents.
+3. Paste a GitHub token in the in-app GitHub card, then click **Connect GitHub**. Use a classic token with `repo` access, or a fine-grained token that can read/write repository contents. If OAuth is not configured and the token field is blank, the app now stays on the page and prompts for a token instead of navigating to an error.
 4. Optional: create a GitHub OAuth App with callback URL `http://localhost:5173/api/auth/github/callback`, then set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` if you prefer OAuth.
 5. Click **Build with Codex** to generate files with OpenAI, then create/select a repo and commit those files to GitHub.
 6. Click **Deploy to Vercel** to create a production deployment using `VERCEL_TOKEN` from the server or a pasted Vercel token in the UI.
