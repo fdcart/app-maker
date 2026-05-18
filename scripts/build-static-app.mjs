@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 
 const requiredFiles = [
   'package.json',
-  'next.config.ts',
+  'next.config.mjs',
   'tailwind.config.ts',
   'app/layout.tsx',
   'app/page.tsx',
