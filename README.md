@@ -36,3 +36,7 @@ npm run typecheck
 
 ## Notes on Codex integration
 This app does **not** pretend to directly control Codex unless a real API/CLI integration is present. Instead it generates clean, complete prompts and structured blueprints that can be sent to Codex workflows.
+
+
+## Vercel output directory
+For Next.js deployments, EasyCodex expects the Next.js default build output (`.next`). If your Vercel project has `Output Directory` set to `dist`, set it to empty/default or `.next`.
