@@ -1,10 +1,15 @@
+'use client';
+import { useEffect, useState } from 'react';
 import { ProjectCanvas } from '@/components/project-canvas';
-import { demoProjects } from '@/data/demo-projects';
+import { getActiveProject, getProjects } from '@/lib/project-store';
+import { SavedProject } from '@/types/project';
 
 export default function ScreenMapPage() {
-  return (
-    <main className="mx-auto max-w-6xl px-4 py-8 md:px-8">
-      <ProjectCanvas screens={demoProjects[0].screenMap} />
-    </main>
-  );
+  const [project, setProject] = useState<SavedProject | null>(null);
+  useEffect(() => {
+    const projects = getProjects();
+    setProject(getActiveProject(projects));
+  }, []);
+  if (!project) return null;
+  return (<main className="mx-auto max-w-6xl px-4 py-8 md:px-8"><ProjectCanvas screens={project.screenMap} /></main>);
 }

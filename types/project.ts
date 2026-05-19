@@ -1,22 +1,6 @@
-export type AppType =
-  | 'Marketplace'
-  | 'Social App'
-  | 'Dashboard'
-  | 'Booking App'
-  | 'Portfolio'
-  | 'Internal Tool'
-  | 'SaaS';
+export type AppType = 'Marketplace' | 'Social App' | 'Dashboard' | 'Booking App' | 'Portfolio' | 'Internal Tool' | 'SaaS';
 
-export type VisualStyle =
-  | 'Minimal'
-  | 'Luxury'
-  | 'Playful'
-  | 'Old Web'
-  | 'Brutalist'
-  | 'Glassmorphism'
-  | 'iOS-like';
-
-export type ProjectStatus = 'idea' | 'blueprint' | 'ready for codex' | 'in development' | 'deployed';
+export type VisualStyle = 'Minimal' | 'Luxury' | 'Playful' | 'Old Web' | 'Brutalist' | 'Glassmorphism' | 'iOS-like';
 
 export type FeatureItem = {
   label: string;
@@ -46,17 +30,15 @@ export type AppBlueprint = {
   databaseTables: DatabaseTable[];
 };
 
-export type Project = {
+export type SavedProject = {
   id: string;
   name: string;
   summary: string;
-  createdAt: string;
-  status: ProjectStatus;
   appType: AppType;
   style: VisualStyle;
-  roles: string[];
-  features: FeatureItem[];
+  status: 'Draft' | 'In Progress' | 'Completed';
   blueprint: AppBlueprint;
   screenMap: ScreenNode[];
   codexPrompt: string;
+  createdAt: string;
 };

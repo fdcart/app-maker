@@ -1,23 +1,14 @@
-import { Project } from '@/types/project';
+import { SavedProject } from '@/types/project';
 
-export const demoProjects: Project[] = [
+export const demoProjects: SavedProject[] = [
   {
     id: 'easycodex-demo-1',
     name: 'StayNest Host OS',
     summary: 'A host dashboard for short-term rental operators to manage listings, guests, and cleaning teams.',
     createdAt: '2026-05-18',
-    status: 'ready for codex',
+    status: 'Completed',
     appType: 'SaaS',
     style: 'Glassmorphism',
-    roles: ['Owner', 'Property Manager', 'Cleaner'],
-    features: [
-      { label: 'Email / magic-link auth', selected: true },
-      { label: 'Role-based dashboard', selected: true },
-      { label: 'Booking calendar', selected: true },
-      { label: 'Team tasks', selected: true },
-      { label: 'Payments summary', selected: true },
-      { label: 'Analytics', selected: true }
-    ],
     blueprint: {
       appName: 'StayNest Host OS',
       targetUsers: ['Short-term rental operators', 'Property managers', 'Cleaning teams'],
